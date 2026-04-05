@@ -1,67 +1,241 @@
-# CAD Validator — Setup & Run Guide (Windows)
+# CAD Validator - AI-Driven Design Intelligence
 
-## One-Time Setup
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://python.org)
+[![Flask](https://img.shields.io/badge/Flask-2.0%2B-green.svg)](https://flask.palletsprojects.com)
+[![Three.js](https://img.shields.io/badge/Three.js-r128-orange.svg)](https://threejs.org)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-1. Install Python 3.10+ from python.org (check "Add to PATH" during install)
+---
 
-2. Open Command Prompt in the project folder:
+## Problem Statement
+
+In manufacturing workflows, design validation and rework consume **15–20% of product development time**. Engineers manually inspect CAD models for issues like wall thickness, watertightness, and manufacturability constraints.
+
+**CAD Validator** automates this process using AI-driven validation and rule-based analysis.
+
+---
+
+## Features
+
+### 3D Model Viewer
+- Interactive STL/OBJ viewer using Three.js  
+- Orbit controls (rotate, pan, zoom)  
+- Visual highlighting based on compliance  
+
+### AI-Powered Validation
+- Part type detection (bracket, housing, etc.)  
+- Context-aware validation rules  
+- Intelligent fix recommendations  
+- Natural language Q&A interface  
+
+### Rule-Based Checks
+- Wall thickness validation  
+- Watertight / manifold detection  
+- Sharp edge detection  
+- Hole diameter validation  
+- Symmetry analysis  
+- Surface-to-volume ratio  
+
+### Reports
+- PDF report generation  
+- Compliance scoring  
+- Severity-based violation listing  
+- AI-generated explanations  
+
+---
+
+## System Architecture
+
+```mermaid
+flowchart TD
+
+    %% Frontend
+    A[User Upload CAD File] --> B[3D Viewer - Three.js]
+    B --> C[User Interaction]
+
+    %% Backend Entry
+    C --> D[Flask Backend]
+
+    %% Processing Pipeline
+    D --> E[Geometry Extractor - Trimesh]
+    E --> F[Rule Checker - Python]
+
+    %% AI Layer
+    F --> G[AI Validator - Gemini API]
+
+    %% Outputs
+    G --> H1[Validation Results]
+    G --> H2[AI Suggestions]
+
+    %% Report Generation
+    H1 --> I[Report Generator - ReportLab]
+    H2 --> I
+    I --> J[PDF Report]
 
 ```
-cd path\to\cad-validator
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- Python 3.10+
+- pip
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/yourusername/cad-validator.git
+cd cad-validator
+
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
 pip install -r requirements.txt
 ```
 
-3. Set your API key (get free key from console.anthropic.com):
+---
+
+## API Setup
+
+Create a `.env` file:
 
 ```
-set ANTHROPIC_API_KEY=your_key_here
+GEMINI_API_KEY=your_api_key_here
 ```
 
-## Run the App
+---
 
-```
+## Run Application
+
+```bash
 python app.py
 ```
 
-Open your browser and go to: http://localhost:5000
+Open:
+```
+http://localhost:5000
+```
 
-## Test with a Sample STL File
+---
 
-Download any STL from:
-- https://grabcad.com (search "bracket" or "housing")
-- https://www.thingiverse.com
+## Usage
 
-Upload it in the web app and click "Validate with AI"
+1. Upload STL/OBJ file  
+2. Inspect model in 3D viewer  
+3. Run validation  
+4. Review violations  
+5. Ask AI questions  
+6. Download report  
+
+---
+
+## Tech Stack
+
+| Component | Technology |
+|----------|-----------|
+| Backend | Flask |
+| AI | Google Gemini API |
+| 3D Viewer | Three.js |
+| Geometry Processing | Trimesh, NumPy |
+| PDF | ReportLab |
+| Frontend | HTML, CSS, JavaScript |
+
+---
 
 ## Project Structure
 
 ```
 cad-validator/
-├── app.py                          ← Flask server (entry point)
-├── requirements.txt                ← Python dependencies
-├── uploads/                        ← Uploaded files stored here (auto-created)
+│
+├── app.py
+├── requirements.txt
+├── .env
+│
+├── frontend/
+│   └── templates/
+│       └── index.html
+│
 ├── backend/
 │   └── modules/
-│       ├── geometry_extractor.py   ← Reads STL geometry
-│       ├── rule_checker.py         ← Deterministic rule checks
-│       ├── ai_validator.py         ← Claude AI validation
-│       └── report_generator.py    ← PDF report generation
-└── frontend/
-    └── templates/
-        └── index.html              ← Full web UI with 3D viewer
+│       ├── geometry_extractor.py
+│       ├── rule_checker.py
+│       ├── ai_validator.py
+│       └── report_generator.py
+│
+├── uploads/
+└── reports/
 ```
 
-## Team Division
+---
 
-| Member | Files to work on |
-|--------|-----------------|
-| Member 1 | geometry_extractor.py, rule_checker.py |
-| Member 2 | ai_validator.py (AI prompts, chat) |
-| Member 3 | index.html (UI improvements, styling) |
+## Validation Rules
 
-## Common Issues
+| Rule | Severity | Description |
+|-----|--------|------------|
+| Watertight | CRITICAL | No open edges |
+| Wall Thickness | CRITICAL | ≥ 1.5mm |
+| Sharp Edges | WARNING | Needs fillets |
+| Symmetry | INFO | Check design intent |
+| Hole Diameter | CRITICAL | ≥ 1.0mm |
 
-- **"Module not found"**: Run `pip install -r requirements.txt` again
-- **API key error**: Make sure `set ANTHROPIC_API_KEY=...` was run in same CMD window
-- **STL not loading**: Use binary STL format (most CAD tools export binary by default)
-- **Port in use**: Change `port=5000` to `port=5001` in app.py
+---
+
+## Testing
+
+```bash
+python test_gemini.py
+
+python -c "from backend.modules.geometry_extractor import extract_geometry; print(extract_geometry('sample.stl'))"
+```
+
+---
+
+## Sample Output
+
+```
+Compliance Score: 85/100
+Part Type: Housing
+Manufacturability: ACCEPTABLE
+
+Violations:
+CRITICAL: Model not watertight
+Fix: Use mesh repair tools
+```
+
+---
+
+## Future Improvements
+
+- Support more CAD formats (STEP, IGES)  
+- Real-time validation feedback  
+- Cloud deployment  
+- Advanced simulation checks  
+- Collaborative design review  
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Acknowledgments
+
+- Google Gemini API  
+- Three.js  
+- Trimesh  
+
+---
+
+## 📧 Contact
+
+GitHub: https://github.com/yourusername/cad-validator
+
+---
+
+⭐ Star this repo if useful
